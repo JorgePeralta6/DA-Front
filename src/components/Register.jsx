@@ -86,7 +86,7 @@ export const Register = ({ switchAuthHandler }) => {
             case "email":
                 isValid = validateEmail(value);
                 break;
-            case "name":
+            case "nombre":
                 isValid = true;
                 break;
             case "password":
@@ -98,7 +98,7 @@ export const Register = ({ switchAuthHandler }) => {
             case "phone":
                 isValid = true;
                 break;
-            case "surname":
+            case "apellido":
                 isValid = true;
                 break;
             case "username":
@@ -125,10 +125,10 @@ export const Register = ({ switchAuthHandler }) => {
         e.preventDefault();
         register(
             formState.email.value,
-            formState.name.value,
+            formState.nombre.value,
             formState.password.value,
             formState.phone.value,
-            formState.surname.value,
+            formState.apellido.value,
             formState.username.value
 
         );
@@ -137,10 +137,10 @@ export const Register = ({ switchAuthHandler }) => {
     const isSubmitButtonDisabled =
         isLoading ||
         !formState.email.isValid ||
-        !formState.name.isValid ||
+        !formState.nombre.isValid ||
         !formState.password.isValid ||
         !formState.phone.isValid ||
-        !formState.surname.isValid ||
+        !formState.apellido.isValid ||
         !formState.username.isValid ||
         !formState.passwordConfir.isValid
 
@@ -186,13 +186,13 @@ export const Register = ({ switchAuthHandler }) => {
                                 <FormControl>
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
-                                        field='name'
-                                        label='Name'
-                                        value={formState.name.value}
+                                        field='nombre'
+                                        label='Nombre'
+                                        value={formState.nombre.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='text'
                                         onBlurHandler={handleInputValidationOnBlur}
-                                        showErrorMessage={formState.name.showError}
+                                        showErrorMessage={formState.nombre.showError}
                                         validationMessage={""}
                                     />
                                 </FormControl>
@@ -200,13 +200,13 @@ export const Register = ({ switchAuthHandler }) => {
                                 <FormControl>
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
-                                        field='surname'
-                                        label='Lastname'
-                                        value={formState.surname.value}
+                                        field='apellido'
+                                        label='Apellido'
+                                        value={formState.apellido.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='text'
                                         onBlurHandler={handleInputValidationOnBlur}
-                                        showErrorMessage={formState.surname.showError}
+                                        showErrorMessage={formState.apellido.showError}
                                         validationMessage={''}
                                     />
                                 </FormControl>
@@ -288,7 +288,7 @@ export const Register = ({ switchAuthHandler }) => {
                                 <Button
                                     bg={buttonColor}
                                     color="white"
-                                    _hover={{ bg: "red.700" }}
+                                    _hover={{ bg: "blue.700" }}
                                     width="500px"
                                     type="submit"
                                     isDisabled={isSubmitButtonDisabled}

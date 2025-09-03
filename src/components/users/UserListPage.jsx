@@ -33,7 +33,7 @@ import {
   FormControl,
   FormLabel
 } from "@chakra-ui/react";
-import { Edit, Eye } from "lucide-react";
+import { Edit, Eye, Trash } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 
@@ -235,6 +235,16 @@ const UserListPage = () => {
                           aria-label="Editar"
                           onClick={() => openEditModal(user)}
                           colorScheme="yellow"
+                          isDisabled={loading}
+                          size="sm"
+                        />
+                      </Tooltip>
+                      <Tooltip label="Eliminar Usuario">
+                        <IconButton
+                          icon={<Trash />}
+                          aria-label="Eliminar"
+                          onClick={() => openEditModal(user)}
+                          colorScheme="red"
                           isDisabled={loading}
                           size="sm"
                         />

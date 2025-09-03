@@ -55,9 +55,9 @@ export const saveUser = async (data) => {
     }
 }
 
-export const deleteUser = async (userId) => {
+export const deleteUser = async (numero) => {
     try {
-        return await apiClient.delete(`/users/${userId}`)
+        return await apiClient.delete(`/users/${numero}`)
 
     } catch (e) {
         const msg = e.response?.data?.msg || 'Error desconocido';
@@ -89,6 +89,36 @@ export const getDPI = async (DPI) => {
         return {
             error: true,
             msg: e.response?.data?.message || 'Error desconocido',
+            e,
+        };
+    }
+};
+
+export const login = async (data) => {
+    try {
+        return await apiClient.post('/auth/login', data)
+    } catch (e) {
+        const msg = e.response?.data?.msg || 'Error desconocido';
+        return {
+            error: true,
+            msg,
+            e,
+        };
+    }
+}
+
+export const register = async (data) => {
+    try {
+        const res = await apiClient.post('/auth/register', data);
+        return {
+            success: true,
+            data: res.data
+        };
+    } catch (e) {
+        const msg = e.response?.data?.msg || 'Error desconocido';
+        return {
+            error: true,
+            msg,
             e,
         };
     }
