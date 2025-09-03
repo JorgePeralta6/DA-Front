@@ -59,27 +59,26 @@ export const useUser = () => {
         }
     };
 
-    const deleteUser = async (userId) => {
-        setLoading(true);
-        try {
-            const result = await deleteUserRequest(userId);
+const deleteUser = async (numero) => {
+    setLoading(true);
+    try {
+        const result = await deleteUserRequest(numero); // API call
 
-            if (result?.error) {
-                toast.error(result.msg || "No se pudo eliminar el usuario");
-                setLoading(false);
-                return false;
-            }
-
-            toast.success("Usuario eliminado correctamente");
-            setUsers((prev) => prev.filter((user) => user._id !== userId));
-            setLoading(false);
-            return true;
-        } catch (error) {
-            toast.error("Error al eliminar usuario");
+        if (result?.error || !result?.success) {
             setLoading(false);
             return false;
         }
-    };
+
+        toast.success("Usuario eliminado correctamente");
+        setLoading(false);
+        return true;
+    } catch (error) {
+        toast.error("Error al eliminar usuario");
+        setLoading(false);
+        return false;
+    }
+};
+
 
 const updateUser = async (numero, updatedUser) => {
     const result = await updateUserRequest(numero, updatedUser);

@@ -38,7 +38,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 
 const UserListPage = () => {
-  const { users, saveUser, updateUser, getUsers, loading } = useUser();
+  const { users, saveUser, updateUser, getUsers, deleteUser, loading } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isViewOpen, onOpen: onViewOpen, onClose: onViewClose } = useDisclosure();
   
@@ -74,6 +74,17 @@ const UserListPage = () => {
       console.error("Error al agregar usuario:", error);
     }
   };
+
+const handleDeleteUser = async (numero) => {
+    const confirm = window.confirm("¿Estás seguro de que quieres eliminar este usuario?");
+    if (!confirm) return;
+
+    const success = await deleteUser(numero);
+
+    if (success) {
+        setSelectedUser((prev) => prev.filter((user) => user.numero !== numero));
+    }
+};
 
   // Función para manejar la actualización de un usuario
   const handleEditUser = async (data) => {
@@ -243,7 +254,7 @@ const UserListPage = () => {
                         <IconButton
                           icon={<Trash />}
                           aria-label="Eliminar"
-                          onClick={() => openEditModal(user)}
+                          onClick={() => handleDeleteUser(user.numero)}
                           colorScheme="red"
                           isDisabled={loading}
                           size="sm"
