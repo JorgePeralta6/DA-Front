@@ -229,7 +229,7 @@ export const Register = ({ switchAuthHandler }) => {
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
                                         field='phone'
-                                        label='Phone'
+                                        label='Telefono'
                                         value={formState.phone.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='text'
@@ -244,7 +244,7 @@ export const Register = ({ switchAuthHandler }) => {
                                         <FormLabel color={labelColor}></FormLabel>
                                         <CustomInput
                                             field='email'
-                                            label='Email'
+                                            label='Correo'
                                             value={formState.email.value}
                                             onChangeHandler={handleInputValueChange}
                                             type='text'
@@ -259,7 +259,7 @@ export const Register = ({ switchAuthHandler }) => {
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
                                         field='password'
-                                        label='Password'
+                                        label='Contraseña'
                                         value={formState.password.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='password'
@@ -273,7 +273,7 @@ export const Register = ({ switchAuthHandler }) => {
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
                                         field='passwordConfir'
-                                        label='Confirm Password'
+                                        label='Confirmar Contraseña'
                                         value={formState.passwordConfir.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='password'

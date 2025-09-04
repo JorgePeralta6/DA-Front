@@ -125,7 +125,7 @@ export const Login = ({ switchAuthHandler }) => {
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
                                         field='email'
-                                        label='Email'
+                                        label='Correo'
                                         value={formState.email.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='text'
@@ -139,7 +139,7 @@ export const Login = ({ switchAuthHandler }) => {
                                     <FormLabel color={labelColor}></FormLabel>
                                     <CustomInput
                                         field='password'
-                                        label='Password'
+                                        label='Contraseña'
                                         value={formState.password.value}
                                         onChangeHandler={handleInputValueChange}
                                         type='password'

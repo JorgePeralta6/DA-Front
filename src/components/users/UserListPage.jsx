@@ -330,6 +330,10 @@ const handleDeleteUser = async (numero) => {
                   <Text fontWeight="bold" minW="120px">Notas:</Text>
                   <Text>{selectedUser.notas || 'No hay notas'}</Text>
                 </HStack>
+                <HStack>
+                  <Text fontWeight="bold" minW="120px">Agregado:</Text>
+                  <Text>{selectedUser.createdAt || 'No hay notas'}</Text>
+                </HStack>
               </VStack>
             )}
           </ModalBody>
