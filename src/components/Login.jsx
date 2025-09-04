@@ -113,7 +113,7 @@ export const Login = ({ switchAuthHandler }) => {
                     <Stack spacing={4}>
                         <Stack align="center">
                             <Heading fontSize="3xl" textAlign="center">
-                                Sign in
+                                Inicio de Sesión
                             </Heading>
                             <Text fontSize="lg" color="white.600">
 
@@ -157,12 +157,12 @@ export const Login = ({ switchAuthHandler }) => {
                                     isDisabled={isSubmitButtonDisabled}
                                     onClick={handleLogin}
                                 >
-                                    Sign Up
+                                    Iniciar Sesión
                                 </Button>
                             </VStack>
                         </form>
                         <Text textAlign="center">
-                            Don't have an account?{" "}
+                            No tienes cuenta?{" "}
                             <Box
                                 as="span"
                                 fontWeight="bold"
@@ -170,7 +170,7 @@ export const Login = ({ switchAuthHandler }) => {
                                 cursor="pointer"
                                 onClick={switchAuthHandler}
                             >
-                                Sign Up
+                                Registrate
                             </Box>
                         </Text>
 

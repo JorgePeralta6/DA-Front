@@ -175,7 +175,7 @@ export const Register = ({ switchAuthHandler }) => {
                     <Stack spacing={4}>
                         <Stack align="center">
                             <Heading fontSize="3xl" textAlign="center">
-                                Sign up
+                                Crear Usuario
                             </Heading>
                             <Text fontSize="lg" color="white.600">
 
@@ -294,13 +294,13 @@ export const Register = ({ switchAuthHandler }) => {
                                     isDisabled={isSubmitButtonDisabled}
                                     onClick={handleRegister}
                                 >
-                                    Sign Up
+                                    Registrate
                                 </Button>
                             </Flex>
                         </form>
 
                         <Text textAlign="center">
-                            Already have an account{" "}
+                            Ya tienes cuenta{" "}
                             <Box
                                 as="span"
                                 fontWeight="bold"
@@ -308,7 +308,7 @@ export const Register = ({ switchAuthHandler }) => {
                                 cursor="pointer"
                                 onClick={switchAuthHandler}
                             >
-                                Sign In
+                                Inicia Sesión
                             </Box>
                         </Text>
 
