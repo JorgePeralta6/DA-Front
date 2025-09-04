@@ -12,6 +12,7 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  Select,
   Stack,
   Table,
   Thead,
@@ -99,7 +100,7 @@ const handleDeleteUser = async (numero) => {
         onClose();
         reset(); // Limpiar formulario
         setSelectedUser(null);
-        await fetchUsersData(); // Recargar la lista
+        await fetchUsersData(); // Recargar la  
       }
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
@@ -430,10 +431,19 @@ const handleDeleteUser = async (numero) => {
                   name="genero"
                   control={control}
                   defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
+                  rules={{ required: "El género es obligatorio" }}
+                  render={({ field, fieldState }) => (
+                    <FormControl isRequired isInvalid={!!fieldState.error}>
                       <FormLabel>Género</FormLabel>
-                      <Input placeholder="Género" {...field} />
+                      <Select placeholder="Seleccione género" {...field}>
+                        <option value="MASCULINO">Masculino</option>
+                        <option value="FEMENINO">Femenino</option>
+                      </Select>
+                      {fieldState.error && (
+                        <Text color="red.500" fontSize="sm" mt={1}>
+                          {fieldState.error.message}
+                        </Text>
+                      )}
                     </FormControl>
                   )}
                 />
