@@ -99,27 +99,33 @@ const updateUser = async (numero, updatedUser) => {
 };
 
 
-    const getDPI = async (DPI) => {
-        setLoading(true);
-        try {
-            const result = await getDPIRequest(DPI);
+const getDPI = async (search) => {
+    setLoading(true);
+    try {
+        const result = await getDPIRequest(search);
 
-            if (result?.error) {
-                setLoading(false);
-                toast.error(result.msg || "No se pudo obtener el usuario por DPI");
-                return null;
-            }
-
-            const foundUser = result.data?.users || result.users;
-            setUser(foundUser);
+        if (result?.error) {
             setLoading(false);
-            return foundUser;
-        } catch (error) {
-            toast.error("Error al buscar usuario por DPI");
-            setLoading(false);
+            toast.error(result.msg || "No se pudo obtener el usuario por DPI o nombre");
             return null;
         }
-    };
+
+        const foundUsers = result.data?.users || result.users;
+
+        if (foundUsers.length === 0) {
+            toast("No se encontraron usuarios");
+        }
+
+        setUsers(foundUsers);
+        setLoading(false);
+        return foundUsers;
+    } catch (error) {
+        toast.error("Error al buscar usuario");
+        setLoading(false);
+        return null;
+    }
+};
+
 
     return {
         users,

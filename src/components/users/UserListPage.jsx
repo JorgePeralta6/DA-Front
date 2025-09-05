@@ -34,18 +34,19 @@ import {
   FormControl,
   FormLabel
 } from "@chakra-ui/react";
-import { Edit, Eye, Trash } from "lucide-react";
+import { Edit, Eye, Trash, Search, RefreshCcw   } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 
 const UserListPage = () => {
-  const { users, saveUser, updateUser, getUsers, deleteUser, loading } = useUser();
+  const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, loading } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isViewOpen, onOpen: onViewOpen, onClose: onViewClose } = useDisclosure();
   
   const { control, handleSubmit, reset } = useForm();
   const [selectedUser, setSelectedUser] = useState(null);
   const [error, setError] = useState(null);
+  const [searchText, setSearchText] = useState("");
 
   // Cargar usuarios cuando el componente se monte
   useEffect(() => {
@@ -60,6 +61,16 @@ const UserListPage = () => {
       setError("Error al cargar los usuarios");
     }
   };
+
+  const handleSearch = async () => {
+    if (!searchText.trim()) {
+      toast.error("Ingrese un texto para buscar");
+      return;
+    }
+
+    await getDPI(searchText.trim());
+  };
+
 
   // Función para manejar la creación de un usuario
   const handleAddUser = async (data) => {
@@ -190,7 +201,30 @@ const handleDeleteUser = async (numero) => {
 
   return (
     <Box p={6}>
-      <HStack justifyContent="space-between" mb={4}>
+      <HStack justifyContent="space-between" mb={4} flexWrap="wrap">
+        <HStack spacing={2}>
+          <Input
+            placeholder="Buscar por DPI o Nombre"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            maxW="300px"
+          />
+          <IconButton
+            icon={<Search />} 
+            colorScheme="blue"
+            onClick={handleSearch}
+            aria-label="Buscar"
+          />
+          <IconButton
+            icon={<RefreshCcw />} 
+            colorScheme="blue"
+            onClick={() => {
+              setSearchText("");
+              fetchUsersData(); // 🔄 Restaurar todos los usuarios
+            }}
+          />
+        </HStack>
+
         <Button onClick={openAddModal} colorScheme="blue">
           Agregar Usuario
         </Button>

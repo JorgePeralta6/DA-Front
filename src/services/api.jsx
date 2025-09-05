@@ -79,20 +79,21 @@ export const updateUser = async (numero, updatedData) => {
     }
 };
 
-export const getDPI = async (DPI) => {
+export const getDPI = async (search) => {
     try {
-        const res = await apiClient.get(`/users/findUser?DPI=${DPI}`);
-        console.log("DPI:", res.data);
+        const res = await apiClient.get(`/users/buscar/${encodeURIComponent(search)}`);
+        console.log("Resultado de búsqueda:", res.data);
         return res;
     } catch (e) {
         console.error("Error en getDPI:", e.response?.data || e);
         return {
             error: true,
-            msg: e.response?.data?.message || 'Error desconocido',
+            msg: e.response?.data?.msg || 'Error desconocido',
             e,
         };
     }
 };
+
 
 export const login = async (data) => {
     try {
