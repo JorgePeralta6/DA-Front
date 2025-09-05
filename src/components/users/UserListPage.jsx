@@ -37,9 +37,10 @@ import {
 import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
+import { exportUsersToExcel } from '../../services/api';
 
 const UserListPage = () => {
-  const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, loading } = useUser();
+  const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, exportToExcel, loading } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isViewOpen, onOpen: onViewOpen, onClose: onViewClose } = useDisclosure();
 
@@ -167,6 +168,15 @@ const UserListPage = () => {
     setSelectedUser(null);
   };
 
+  const handleExportToExcel = async () => {
+    const result = await exportUsersToExcel();
+    if (result.error) {
+      alert('Hubo un problema al exportar el archivo');
+    } else {
+      alert('Usuarios exportados correctamente, ve a la carpeta de descargas');
+    }
+  };
+
   // Renderizar estado de carga
   if (loading && users.length === 0) {
     return (
@@ -228,6 +238,10 @@ const UserListPage = () => {
         <Button onClick={openAddModal} colorScheme="blue">
           Agregar Usuario
         </Button>
+        <Button onClick={handleExportToExcel} colorScheme="green">
+          Exportar a Excel
+        </Button>
+
       </HStack>
 
       <TableContainer>

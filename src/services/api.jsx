@@ -124,3 +124,24 @@ export const register = async (data) => {
         };
     }
 };
+
+export const exportUsersToExcel = async () => {
+    try {
+        const response = await apiClient.get('/users/excel', {
+            responseType: 'blob', // Esto asegura que recibimos un archivo
+        });
+
+        // Crear un enlace temporal para descargar el archivo
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+
+        return { success: true };
+    } catch (e) {
+        const msg = e.response?.data?.msg || 'Error desconocido';
+        console.error('Error al exportar usuarios:', e);
+        return {
+            error: true,
+            msg,
+            e,
+        };
+    }
+};
