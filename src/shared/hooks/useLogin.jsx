@@ -21,7 +21,7 @@ export const useLogin = () => {
 
         setIsLoading(false)
 
-        if(response.error){
+        if (response.error) {
             return toast.error(response.error?.response?.data || 'Ocurrio un error al iniciar sesión, usuario no encontrado', {
                 style: {
                     background: 'red',
@@ -33,7 +33,7 @@ export const useLogin = () => {
         const { authDetails } = response.data
 
         localStorage.setItem('auth', JSON.stringify(authDetails));
-        
+
 
         toast.success('Sesion iniciada correctamente', {
             style: {

@@ -23,7 +23,6 @@ import {
     Flex,
     SimpleGrid,
     GridItem
-    
 } from "@chakra-ui/react";
 
 export const Register = ({ switchAuthHandler }) => {

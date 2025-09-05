@@ -34,7 +34,7 @@ import {
   FormControl,
   FormLabel
 } from "@chakra-ui/react";
-import { Edit, Eye, Trash, Search, RefreshCcw   } from "lucide-react";
+import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 
@@ -42,7 +42,7 @@ const UserListPage = () => {
   const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, loading } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isViewOpen, onOpen: onViewOpen, onClose: onViewClose } = useDisclosure();
-  
+
   const { control, handleSubmit, reset } = useForm();
   const [selectedUser, setSelectedUser] = useState(null);
   const [error, setError] = useState(null);
@@ -87,16 +87,16 @@ const UserListPage = () => {
     }
   };
 
-const handleDeleteUser = async (numero) => {
+  const handleDeleteUser = async (numero) => {
     const confirm = window.confirm("¿Estás seguro de que quieres eliminar este usuario?");
     if (!confirm) return;
 
     const success = await deleteUser(numero);
 
     if (success) {
-        setSelectedUser((prev) => prev.filter((user) => user.numero !== numero));
+      setSelectedUser((prev) => prev.filter((user) => user.numero !== numero));
     }
-};
+  };
 
   // Función para manejar la actualización de un usuario
   const handleEditUser = async (data) => {
@@ -210,13 +210,13 @@ const handleDeleteUser = async (numero) => {
             maxW="300px"
           />
           <IconButton
-            icon={<Search />} 
+            icon={<Search />}
             colorScheme="blue"
             onClick={handleSearch}
             aria-label="Buscar"
           />
           <IconButton
-            icon={<RefreshCcw />} 
+            icon={<RefreshCcw />}
             colorScheme="blue"
             onClick={() => {
               setSearchText("");
@@ -250,7 +250,7 @@ const handleDeleteUser = async (numero) => {
             {users.map((user, index) => {
               // Crear una key única usando _id o index como fallback
               const uniqueKey = user._id || `user-${index}`;
-              
+
               return (
                 <Tr key={uniqueKey}>
                   <Td>{user.numero || index + 1}</Td>
@@ -262,7 +262,7 @@ const handleDeleteUser = async (numero) => {
                   <Td>{user.email || 'No especificado'}</Td>
                   <Td>{user.telefono || 'No especificado'}</Td>
                   <Td>{user.genero || 'No especificado'}</Td>
-                  
+
                   <Td>
                     <HStack spacing={2}>
                       <Tooltip label="Ver detalles">
@@ -369,9 +369,9 @@ const handleDeleteUser = async (numero) => {
                   <Text>
                     {selectedUser.createdAt
                       ? new Date(selectedUser.createdAt).toLocaleDateString('es-ES', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      year: 'numeric',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
                       })
                       : 'No hay fecha'}
                   </Text>
@@ -505,8 +505,8 @@ const handleDeleteUser = async (numero) => {
                     </FormControl>
                   )}
                 />
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   colorScheme="teal"
                   isLoading={loading}
                   loadingText={selectedUser ? "Actualizando..." : "Agregando..."}

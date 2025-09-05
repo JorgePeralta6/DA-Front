@@ -24,12 +24,12 @@ export const useUser = () => {
         }
 
         toast.success("Usuario agregado con éxito");
-        
+
         // Agregar el nuevo usuario al estado
         if (result.data && result.data.user) {
             setUsers((prev) => [...prev, result.data.user]);
         }
-        
+
         setLoading(false);
         return result.data.user;
     };
@@ -59,72 +59,72 @@ export const useUser = () => {
         }
     };
 
-const deleteUser = async (numero) => {
-    setLoading(true);
-    try {
-        const result = await deleteUserRequest(numero); // API call
+    const deleteUser = async (numero) => {
+        setLoading(true);
+        try {
+            const result = await deleteUserRequest(numero); // API call
 
-        if (result?.error || !result?.success) {
+            if (result?.error || !result?.success) {
+                setLoading(false);
+                return false;
+            }
+
+            toast.success("Usuario eliminado correctamente");
+            setLoading(false);
+            return true;
+        } catch (error) {
+            toast.error("Error al eliminar usuario");
             setLoading(false);
             return false;
         }
-
-        toast.success("Usuario eliminado correctamente");
-        setLoading(false);
-        return true;
-    } catch (error) {
-        toast.error("Error al eliminar usuario");
-        setLoading(false);
-        return false;
-    }
-};
+    };
 
 
-const updateUser = async (numero, updatedUser) => {
-    const result = await updateUserRequest(numero, updatedUser);
+    const updateUser = async (numero, updatedUser) => {
+        const result = await updateUserRequest(numero, updatedUser);
 
-    if (result.error) {
-        toast.error(result.e?.response?.data?.message || "No se pudo actualizar el usuario");
-        return null;
-    }
-
-    toast.success("Usuario actualizado correctamente");
-
-    // Actualiza el usuario en el estado global
-    setUsers((prev) =>
-        prev.map((u) => (u.numero === numero ? { ...u, ...updatedUser } : u))
-    );
-
-    return result.user || result.data?.user || null;
-};
-
-
-const getDPI = async (search) => {
-    setLoading(true);
-    try {
-        const result = await getDPIRequest(search);
-
-        if (result?.error) {
-            setLoading(false);
-            toast.error(result.msg || "No se pudo obtener el usuario por DPI o nombre");
+        if (result.error) {
+            toast.error(result.e?.response?.data?.message || "No se pudo actualizar el usuario");
             return null;
         }
 
-        const foundUsers = result.data?.users || result.users;
+        toast.success("Usuario actualizado correctamente");
 
-        if (foundUsers.length === 0) {
-            toast("No se encontraron usuarios");
+        // Actualiza el usuario en el estado global
+        setUsers((prev) =>
+            prev.map((u) => (u.numero === numero ? { ...u, ...updatedUser } : u))
+        );
+
+        return result.user || result.data?.user || null;
+    };
+
+
+    const getDPI = async (search) => {
+        setLoading(true);
+        try {
+            const result = await getDPIRequest(search);
+
+            if (result?.error) {
+                setLoading(false);
+                toast.error(result.msg || "No se pudo obtener el usuario por DPI o nombre");
+                return null;
+            }
+
+            const foundUsers = result.data?.users || result.users;
+
+            if (foundUsers.length === 0) {
+                toast("No se encontraron usuarios");
+            }
+
+            setUsers(foundUsers);
+            setLoading(false);
+            return foundUsers;
+        } catch (error) {
+            toast.error("Error al buscar usuario");
+            setLoading(false);
+            return null;
         }
-
-        setUsers(foundUsers);
-        setLoading(false);
-        return foundUsers;
-    } catch (error) {
-        toast.error("Error al buscar usuario");
-        setLoading(false);
-        return null;
-    }
-};
+    };
 
 
     return {
