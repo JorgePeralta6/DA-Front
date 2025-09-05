@@ -366,7 +366,16 @@ const handleDeleteUser = async (numero) => {
                 </HStack>
                 <HStack>
                   <Text fontWeight="bold" minW="120px">Agregado:</Text>
-                  <Text>{selectedUser.createdAt || 'No hay notas'}</Text>
+                  <Text>
+                    {selectedUser.createdAt
+                      ? new Date(selectedUser.createdAt).toLocaleDateString('es-ES', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                      })
+                      : 'No hay fecha'}
+                  </Text>
+
                 </HStack>
               </VStack>
             )}
