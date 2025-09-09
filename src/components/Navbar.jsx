@@ -52,9 +52,9 @@ export default function Nav({ onCourseSelect }) {
         <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
             <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
                 <Image
-                    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhn1uaAI2Ud5QqCdj-uknMRoeiJqmJi9SnlOwEgqq3igqoX0EciSRe5Xyqsbe3xVLUqXC29XIMDpJyLsKuKPMpJLWKnsyNfCt1PRNGbS8ghrgdKp0L1WRqUd1tsqh-HGgn7N5-9jzyTR6E/w1200-h630-p-k-no-nu/BanderaAmatitl%25C3%25A1n.jpg" // Reemplaza con tu URL
+                    src="https://i.ibb.co/1t1rKmHQ/Logo-Amatitlan-removebg-preview.png"
                     alt="Logo"
-                    boxSize="110px"
+                    boxSize="250px"
                     objectFit="contain"
                 />
 
