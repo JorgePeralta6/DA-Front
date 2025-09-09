@@ -32,12 +32,14 @@ import {
   AlertTitle,
   AlertDescription,
   FormControl,
-  FormLabel
+  FormLabel,
+  SimpleGrid
 } from "@chakra-ui/react";
 import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 import { exportUsersToExcel } from '../../services/api';
+import Nav from '../Navbar';
 
 const UserListPage = () => {
   const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, exportToExcel, loading } = useUser();
@@ -210,334 +212,355 @@ const UserListPage = () => {
   }
 
   return (
-    <Box p={6}>
-      <HStack justifyContent="space-between" mb={4} flexWrap="wrap">
-        <HStack spacing={2}>
-          <Input
-            placeholder="Buscar por DPI o Nombre"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            maxW="300px"
-          />
-          <IconButton
-            icon={<Search />}
-            colorScheme="blue"
-            onClick={handleSearch}
-            aria-label="Buscar"
-          />
-          <IconButton
-            icon={<RefreshCcw />}
-            colorScheme="blue"
-            onClick={() => {
-              setSearchText("");
-              fetchUsersData(); // 🔄 Restaurar todos los usuarios
-            }}
-          />
+    <>
+      <Nav />
+      <Box p={6}>
+        <HStack justifyContent="space-between" mb={4} flexWrap="wrap">
+          <HStack spacing={2}>
+            <Input
+              placeholder="Buscar por DPI o Nombre"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              maxW="300px"
+            />
+            <IconButton
+              icon={<Search />}
+              colorScheme="blue"
+              onClick={handleSearch}
+              aria-label="Buscar"
+            />
+            <IconButton
+              icon={<RefreshCcw />}
+              colorScheme="blue"
+              onClick={() => {
+                setSearchText("");
+                fetchUsersData(); // 🔄 Restaurar todos los usuarios
+              }}
+            />
+          </HStack>
+
+          <Button onClick={openAddModal} colorScheme="blue">
+            Agregar Usuario
+          </Button>
+          <Button onClick={handleExportToExcel} colorScheme="green">
+            Exportar a Excel
+          </Button>
+
         </HStack>
 
-        <Button onClick={openAddModal} colorScheme="blue">
-          Agregar Usuario
-        </Button>
-        <Button onClick={handleExportToExcel} colorScheme="green">
-          Exportar a Excel
-        </Button>
+        <TableContainer>
+          <Table variant="simple" size="sm">
+            <Thead>
+              <Tr>
+                <Th>Número</Th>
+                <Th>Nombre Encargado</Th>
+                <Th>Nombre Niño</Th>
+                <Th>DPI</Th>
+                <Th>Comunidad</Th>
+                <Th>Dirección</Th>
+                <Th>Correo</Th>
+                <Th>Teléfono</Th>
+                <Th>Género</Th>
+                <Th>Acciones</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {users.map((user, index) => {
+                // Crear una key única usando _id o index como fallback
+                const uniqueKey = user._id || `user-${index}`;
 
-      </HStack>
+                return (
+                  <Tr key={uniqueKey}>
+                    <Td>{user.numero || index + 1}</Td>
+                    <Td>{user.nombreE || 'No especificado'}</Td>
+                    <Td>{user.nombreN || 'No especificado'}</Td>
+                    <Td>{user.DPI || 'No especificado'}</Td>
+                    <Td>{user.comunidad || 'No especificado'}</Td>
+                    <Td>{user.direccion || 'No especificado'}</Td>
+                    <Td>{user.email || 'No especificado'}</Td>
+                    <Td>{user.telefono || 'No especificado'}</Td>
+                    <Td>{user.genero || 'No especificado'}</Td>
 
-      <TableContainer>
-        <Table variant="simple" size="sm">
-          <Thead>
-            <Tr>
-              <Th>Número</Th>
-              <Th>Nombre Encargado</Th>
-              <Th>Nombre Niño</Th>
-              <Th>DPI</Th>
-              <Th>Comunidad</Th>
-              <Th>Dirección</Th>
-              <Th>Correo</Th>
-              <Th>Teléfono</Th>
-              <Th>Género</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {users.map((user, index) => {
-              // Crear una key única usando _id o index como fallback
-              const uniqueKey = user._id || `user-${index}`;
+                    <Td>
+                      <HStack spacing={2}>
+                        <Tooltip label="Ver detalles">
+                          <IconButton
+                            icon={<Eye />}
+                            aria-label="Ver"
+                            onClick={() => handleViewUser(user)}
+                            colorScheme="blue"
+                            isDisabled={loading}
+                            size="sm"
+                          />
+                        </Tooltip>
+                        <Tooltip label="Editar usuario">
+                          <IconButton
+                            icon={<Edit />}
+                            aria-label="Editar"
+                            onClick={() => openEditModal(user)}
+                            colorScheme="yellow"
+                            isDisabled={loading}
+                            size="sm"
+                          />
+                        </Tooltip>
+                        <Tooltip label="Eliminar Usuario">
+                          <IconButton
+                            icon={<Trash />}
+                            aria-label="Eliminar"
+                            onClick={() => handleDeleteUser(user.numero)}
+                            colorScheme="red"
+                            isDisabled={loading}
+                            size="sm"
+                          />
+                        </Tooltip>
+                      </HStack>
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </TableContainer>
 
-              return (
-                <Tr key={uniqueKey}>
-                  <Td>{user.numero || index + 1}</Td>
-                  <Td>{user.nombreE || 'No especificado'}</Td>
-                  <Td>{user.nombreN || 'No especificado'}</Td>
-                  <Td>{user.DPI || 'No especificado'}</Td>
-                  <Td>{user.comunidad || 'No especificado'}</Td>
-                  <Td>{user.direccion || 'No especificado'}</Td>
-                  <Td>{user.email || 'No especificado'}</Td>
-                  <Td>{user.telefono || 'No especificado'}</Td>
-                  <Td>{user.genero || 'No especificado'}</Td>
+        {users.length === 0 && !loading && (
+          <Center p={8}>
+            <Box textAlign="center">
+              <Text fontSize="lg" color="gray.600" mb={4}>No hay usuarios registrados</Text>
+              <Button colorScheme="blue" onClick={openAddModal}>
+                Agregar Primer Usuario
+              </Button>
+            </Box>
+          </Center>
+        )}
 
-                  <Td>
-                    <HStack spacing={2}>
-                      <Tooltip label="Ver detalles">
-                        <IconButton
-                          icon={<Eye />}
-                          aria-label="Ver"
-                          onClick={() => handleViewUser(user)}
-                          colorScheme="blue"
-                          isDisabled={loading}
-                          size="sm"
-                        />
-                      </Tooltip>
-                      <Tooltip label="Editar usuario">
-                        <IconButton
-                          icon={<Edit />}
-                          aria-label="Editar"
-                          onClick={() => openEditModal(user)}
-                          colorScheme="yellow"
-                          isDisabled={loading}
-                          size="sm"
-                        />
-                      </Tooltip>
-                      <Tooltip label="Eliminar Usuario">
-                        <IconButton
-                          icon={<Trash />}
-                          aria-label="Eliminar"
-                          onClick={() => handleDeleteUser(user.numero)}
-                          colorScheme="red"
-                          isDisabled={loading}
-                          size="sm"
-                        />
-                      </Tooltip>
-                    </HStack>
-                  </Td>
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
-      </TableContainer>
+        {/* Modal Ver Usuario */}
+        <Modal isOpen={isViewOpen} onClose={onViewClose} size="lg">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Detalles del Usuario</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {selectedUser && (
+                <VStack spacing={4} align="stretch">
+                  <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
 
-      {users.length === 0 && !loading && (
-        <Center p={8}>
-          <Box textAlign="center">
-            <Text fontSize="lg" color="gray.600" mb={4}>No hay usuarios registrados</Text>
-            <Button colorScheme="blue" onClick={openAddModal}>
-              Agregar Primer Usuario
-            </Button>
-          </Box>
-        </Center>
-      )}
+                    {/* Nombre Niño */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                      <Text fontWeight="bold">Correo:</Text>
+                      <Text>{selectedUser.email || 'No especificado'}</Text>
+                    </Box>
 
-      {/* Modal Ver Usuario */}
-      <Modal isOpen={isViewOpen} onClose={onViewClose} size="lg">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Detalles del Usuario</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {selectedUser && (
-              <VStack spacing={4} align="stretch">
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Número:</Text>
-                  <Text>{selectedUser.numero || 'No asignado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Nombre Encargado:</Text>
-                  <Text>{selectedUser.nombreE || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Nombre Niño:</Text>
-                  <Text>{selectedUser.nombreN || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">DPI:</Text>
-                  <Text>{selectedUser.DPI || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Comunidad:</Text>
-                  <Text>{selectedUser.comunidad || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Dirección:</Text>
-                  <Text>{selectedUser.direccion || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Email:</Text>
-                  <Text>{selectedUser.email || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Teléfono:</Text>
-                  <Text>{selectedUser.telefono || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Género:</Text>
-                  <Text>{selectedUser.genero || 'No especificado'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Notas:</Text>
-                  <Text>{selectedUser.notas || 'No hay notas'}</Text>
-                </HStack>
-                <HStack>
-                  <Text fontWeight="bold" minW="120px">Agregado:</Text>
-                  <Text>
-                    {selectedUser.createdAt
-                      ? new Date(selectedUser.createdAt).toLocaleDateString('es-ES', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric',
-                      })
-                      : 'No hay fecha'}
-                  </Text>
+                    {/* Género */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                      <Text fontWeight="bold">Comunidad:</Text>
+                      <Text>{selectedUser.comunidad || 'No especificado'}</Text>
+                    </Box>
 
-                </HStack>
-              </VStack>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" onClick={onViewClose}>
-              Cerrar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+                    {/* Nombre Encargado */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                      <Text fontWeight="bold">Direccion:</Text>
+                      <Text>{selectedUser.direccion || 'No especificado'}</Text>
+                    </Box>
 
-      {/* Modal Agregar/Editar Usuario */}
-      <Modal isOpen={isOpen} onClose={handleCloseModal} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{selectedUser ? "Editar Usuario" : "Agregar Usuario"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={handleSubmit(selectedUser ? handleEditUser : handleAddUser)}>
-              <Stack spacing={3}>
-                <Controller
-                  name="nombreE"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Nombre del Encargado</FormLabel>
-                      <Input placeholder="Nombre del encargado" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="nombreN"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Nombre del Niño</FormLabel>
-                      <Input placeholder="Nombre del niño" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="DPI"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>DPI</FormLabel>
-                      <Input placeholder="DPI" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="comunidad"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Comunidad</FormLabel>
-                      <Input placeholder="Comunidad" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="direccion"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Dirección</FormLabel>
-                      <Input placeholder="Dirección" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="email"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Email</FormLabel>
-                      <Input placeholder="Email" type="email" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="telefono"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Teléfono</FormLabel>
-                      <Input placeholder="Teléfono" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="genero"
-                  control={control}
-                  defaultValue=""
-                  rules={{ required: "El género es obligatorio" }}
-                  render={({ field, fieldState }) => (
-                    <FormControl isRequired isInvalid={!!fieldState.error}>
-                      <FormLabel>Género</FormLabel>
-                      <Select placeholder="Seleccione género" {...field}>
-                        <option value="MASCULINO">Masculino</option>
-                        <option value="FEMENINO">Femenino</option>
-                      </Select>
-                      {fieldState.error && (
-                        <Text color="red.500" fontSize="sm" mt={1}>
-                          {fieldState.error.message}
-                        </Text>
-                      )}
-                    </FormControl>
-                  )}
-                />
-                <Controller
-                  name="notas"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <FormControl>
-                      <FormLabel>Notas</FormLabel>
-                      <Input placeholder="Notas" {...field} />
-                    </FormControl>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  colorScheme="teal"
-                  isLoading={loading}
-                  loadingText={selectedUser ? "Actualizando..." : "Agregando..."}
-                >
-                  {selectedUser ? "Actualizar Usuario" : "Agregar Usuario"}
-                </Button>
-              </Stack>
-            </form>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="gray" mr={3} onClick={handleCloseModal}>
-              Cancelar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </Box>
+                    {/* DPI */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                      <Text fontWeight="bold">Nombre Encargado:</Text>
+                      <Text>{selectedUser.nombreE || 'No especificado'}</Text>
+                    </Box>
+
+                    {/* Comunidad */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                      <Text fontWeight="bold">Telefono:</Text>
+                      <Text>{selectedUser.telefono || 'No especificado'}</Text>
+                    </Box>
+
+                    {/* Dirección */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                      <Text fontWeight="bold">DPI:</Text>
+                      <Text>{selectedUser.DPI || 'No especificado'}</Text>
+                    </Box>
+
+                    {/* Email */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
+                      <Text fontWeight="bold">Nombre Niño:</Text>
+                      <Text>{selectedUser.nombreN || 'No especificado'}</Text>
+                    </Box>
+
+                    {/* Teléfono */}
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
+                      <Text fontWeight="bold">Genero:</Text>
+                      <Text>{selectedUser.genero || 'No especificado'}</Text>
+                    </Box>
+                  </SimpleGrid>
+
+                  {/* Notas */}
+                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="orange.50">
+                    <Text fontWeight="bold">Notas:</Text>
+                    <Text>{selectedUser.notas || 'No hay notas'}</Text>
+                  </Box>
+
+                  {/* Fecha de creación */}
+                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="gray.100">
+                    <Text fontWeight="bold">Agregado el:</Text>
+                    <Text>
+                      {selectedUser.createdAt
+                        ? new Date(selectedUser.createdAt).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })
+                        : 'No hay fecha'}
+                    </Text>
+                  </Box>
+                </VStack>
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" onClick={onViewClose}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+
+        {/* Modal Agregar/Editar Usuario */}
+        <Modal isOpen={isOpen} onClose={handleCloseModal} size="xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{selectedUser ? "Editar Usuario" : "Agregar Usuario"}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <form onSubmit={handleSubmit(selectedUser ? handleEditUser : handleAddUser)}>
+                <Stack spacing={3}>
+                  <Controller
+                    name="nombreE"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Nombre del Encargado</FormLabel>
+                        <Input placeholder="Nombre del encargado" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="nombreN"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Nombre del Niño</FormLabel>
+                        <Input placeholder="Nombre del niño" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="DPI"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>DPI</FormLabel>
+                        <Input placeholder="DPI (Encargado)" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="comunidad"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Comunidad</FormLabel>
+                        <Input placeholder="Comunidad" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="direccion"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Dirección</FormLabel>
+                        <Input placeholder="Dirección" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="email"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Email</FormLabel>
+                        <Input placeholder="Email" type="email" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="telefono"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Teléfono</FormLabel>
+                        <Input placeholder="Teléfono" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="genero"
+                    control={control}
+                    defaultValue=""
+                    rules={{ required: "El género es obligatorio" }}
+                    render={({ field, fieldState }) => (
+                      <FormControl isRequired isInvalid={!!fieldState.error}>
+                        <FormLabel>Género</FormLabel>
+                        <Select placeholder="Seleccione género" {...field}>
+                          <option value="MASCULINO">Masculino</option>
+                          <option value="FEMENINO">Femenino</option>
+                        </Select>
+                        {fieldState.error && (
+                          <Text color="red.500" fontSize="sm" mt={1}>
+                            {fieldState.error.message}
+                          </Text>
+                        )}
+                      </FormControl>
+                    )}
+                  />
+                  <Controller
+                    name="notas"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormControl>
+                        <FormLabel>Notas</FormLabel>
+                        <Input placeholder="Notas" {...field} />
+                      </FormControl>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    colorScheme="teal"
+                    isLoading={loading}
+                    loadingText={selectedUser ? "Actualizando..." : "Agregando..."}
+                  >
+                    {selectedUser ? "Actualizar Registro" : "Agregar Registro"}
+                  </Button>
+                </Stack>
+              </form>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="gray" mr={3} onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Box>
+    </>
   );
 };
 
