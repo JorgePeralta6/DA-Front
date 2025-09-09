@@ -344,49 +344,49 @@ const UserListPage = () => {
                 <VStack spacing={4} align="stretch">
                   <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
 
-                    {/* Nombre Niño */}
+                    {/* Correo */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
                       <Text fontWeight="bold">Correo:</Text>
                       <Text>{selectedUser.email || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Género */}
+                    {/* Comunidad */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
                       <Text fontWeight="bold">Comunidad:</Text>
                       <Text>{selectedUser.comunidad || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Nombre Encargado */}
+                    {/* Direccion */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
                       <Text fontWeight="bold">Direccion:</Text>
                       <Text>{selectedUser.direccion || 'No especificado'}</Text>
                     </Box>
 
-                    {/* DPI */}
+                    {/* Nombre del Encargado */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
                       <Text fontWeight="bold">Nombre Encargado:</Text>
                       <Text>{selectedUser.nombreE || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Comunidad */}
+                    {/* Telefono */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
                       <Text fontWeight="bold">Telefono:</Text>
                       <Text>{selectedUser.telefono || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Dirección */}
+                    {/* DPI */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
                       <Text fontWeight="bold">DPI:</Text>
                       <Text>{selectedUser.DPI || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Email */}
+                    {/* Nombre del Niño */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
                       <Text fontWeight="bold">Nombre Niño:</Text>
                       <Text>{selectedUser.nombreN || 'No especificado'}</Text>
                     </Box>
 
-                    {/* Teléfono */}
+                    {/* Genero */}
                     <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
                       <Text fontWeight="bold">Genero:</Text>
                       <Text>{selectedUser.genero || 'No especificado'}</Text>

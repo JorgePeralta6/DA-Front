@@ -54,7 +54,7 @@ export default function Nav({ onCourseSelect }) {
                 <Image
                     src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhn1uaAI2Ud5QqCdj-uknMRoeiJqmJi9SnlOwEgqq3igqoX0EciSRe5Xyqsbe3xVLUqXC29XIMDpJyLsKuKPMpJLWKnsyNfCt1PRNGbS8ghrgdKp0L1WRqUd1tsqh-HGgn7N5-9jzyTR6E/w1200-h630-p-k-no-nu/BanderaAmatitl%25C3%25A1n.jpg" // Reemplaza con tu URL
                     alt="Logo"
-                    boxSize="100px"
+                    boxSize="110px"
                     objectFit="contain"
                 />
 
