@@ -33,7 +33,8 @@ import {
   AlertDescription,
   FormControl,
   FormLabel,
-  SimpleGrid
+  SimpleGrid,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
@@ -345,62 +346,62 @@ const UserListPage = () => {
                   <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
 
                     {/* Correo */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('green.50', 'green.800')}>
                       <Text fontWeight="bold">Correo:</Text>
                       <Text>{selectedUser.email || 'No especificado'}</Text>
                     </Box>
 
                     {/* Comunidad */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('green.50', 'green.800')}>
                       <Text fontWeight="bold">Comunidad:</Text>
                       <Text>{selectedUser.comunidad || 'No especificado'}</Text>
                     </Box>
 
                     {/* Direccion */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="green.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('green.50', 'green.800')}>
                       <Text fontWeight="bold">Direccion:</Text>
                       <Text>{selectedUser.direccion || 'No especificado'}</Text>
                     </Box>
 
                     {/* Nombre del Encargado */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('red.50', 'red.800')}>
                       <Text fontWeight="bold">Nombre Encargado:</Text>
                       <Text>{selectedUser.nombreE || 'No especificado'}</Text>
                     </Box>
 
                     {/* Telefono */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('red.50', 'red.800')}>
                       <Text fontWeight="bold">Telefono:</Text>
                       <Text>{selectedUser.telefono || 'No especificado'}</Text>
                     </Box>
 
                     {/* DPI */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="red.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('red.50', 'red.800')}>
                       <Text fontWeight="bold">DPI:</Text>
                       <Text>{selectedUser.DPI || 'No especificado'}</Text>
                     </Box>
 
                     {/* Nombre del Niño */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('blue.50', 'blue.800')}>
                       <Text fontWeight="bold">Nombre Niño:</Text>
                       <Text>{selectedUser.nombreN || 'No especificado'}</Text>
                     </Box>
 
                     {/* Genero */}
-                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="blue.50">
+                    <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('blue.50', 'blue.800')}>
                       <Text fontWeight="bold">Genero:</Text>
                       <Text>{selectedUser.genero || 'No especificado'}</Text>
                     </Box>
                   </SimpleGrid>
 
                   {/* Notas */}
-                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="orange.50">
+                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('orange.50', 'orange.800')}>
                     <Text fontWeight="bold">Notas:</Text>
                     <Text>{selectedUser.notas || 'No hay notas'}</Text>
                   </Box>
 
                   {/* Fecha de creación */}
-                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg="gray.100">
+                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={3} bg={useColorModeValue('gray.50', 'gray.800')}>
                     <Text fontWeight="bold">Agregado el:</Text>
                     <Text>
                       {selectedUser.createdAt
