@@ -13,7 +13,7 @@ import {
     MenuList,
     MenuButton,
     MenuItem,
-    Center,
+    Tooltip,
     Image
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
@@ -60,9 +60,11 @@ export default function Nav({ onCourseSelect }) {
 
                 <Flex alignItems={'center'}>
                     <Stack direction={'row'} spacing={7}>
-                        <Button onClick={toggleColorMode}>
-                            {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-                        </Button>
+                        <Tooltip label="Cambiar de tema">
+                            <Button onClick={toggleColorMode}>
+                                {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+                            </Button>
+                        </Tooltip>
 
                         {/* Menú del avatar */}
                         <Menu>
