@@ -51,12 +51,16 @@ export default function Nav({ onCourseSelect }) {
     return (
         <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
             <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-                <Image
-                    src="https://i.ibb.co/1t1rKmHQ/Logo-Amatitlan-removebg-preview.png"
-                    alt="Logo"
-                    boxSize="250px"
-                    objectFit="contain"
-                />
+                <Flex alignItems="center">
+                    <Image
+                        src="https://i.ibb.co/wNmNDkxf/logo-2024-color.png"
+                        alt="Logo"
+                        boxSize="90px"
+                        objectFit="contain"
+                        mr={2}
+                    />
+                    <Box fontWeight="bold">DMM</Box>
+                </Flex>
 
                 <Flex alignItems={'center'}>
                     <Stack direction={'row'} spacing={7}>

@@ -34,7 +34,9 @@ import {
   FormControl,
   FormLabel,
   SimpleGrid,
-  useColorModeValue
+  useColorModeValue,
+  Image,
+  Flex
 } from "@chakra-ui/react";
 import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
@@ -560,6 +562,15 @@ const UserListPage = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+        <Flex justify="center" align="center">
+          <Image
+            src="https://i.ibb.co/dsY03w5t/escudo-muni-1.png"
+            alt="Logo"
+            boxSize="275px"
+            objectFit="contain"
+            mr={2}
+          />
+        </Flex>
       </Box>
     </>
   );
