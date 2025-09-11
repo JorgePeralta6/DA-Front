@@ -145,3 +145,46 @@ export const exportUsersToExcel = async () => {
         };
     }
 };
+
+export const getEmployees = async () => {
+    try {
+        return await apiClient.get('/auth')
+    } catch (e) {
+        const msg = e.response?.data?.msg || 'Error desconocido';
+        return {
+            error: true,
+            msg,
+            e,
+        };
+    }
+}
+
+// Actualizar empleado
+export const updateEmployee = async (id, updatedData) => {
+    try {
+        const response = await apiClient.put(`/auth/employees/${id}`, updatedData);
+        return response.data;
+    } catch (e) {
+        console.error('Error en updateEmployee:', e);
+        return { 
+            error: true, 
+            msg: e.response?.data?.msg || 'Error desconocido',
+            e 
+        };
+    }
+};
+
+// Actualizar contraseña de empleado
+export const updateEmployeePassword = async (id, passwordData) => {
+    try {
+        const response = await apiClient.put(`/auth/employees/${id}/password`, passwordData);
+        return response.data;
+    } catch (e) {
+        console.error('Error en updateEmployeePassword:', e);
+        return { 
+            error: true, 
+            msg: e.response?.data?.msg || 'Error desconocido',
+            e 
+        };
+    }
+};
