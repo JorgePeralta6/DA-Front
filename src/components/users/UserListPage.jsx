@@ -313,11 +313,6 @@ const UserListPage = () => {
                     <Td>
                       <HStack>
                         <Text>{user.numero || index + 1}</Text>
-                        {userHasFamily && (
-                          <Badge colorScheme="purple" size="sm">
-                            Familia
-                          </Badge>
-                        )}
                       </HStack>
                     </Td>
                     <Td>{user.nombreE || 'No especificado'}</Td>
@@ -341,19 +336,6 @@ const UserListPage = () => {
                             size="sm"
                           />
                         </Tooltip>
-                        
-                        {userHasFamily && (
-                          <Tooltip label="Ver Familia">
-                            <IconButton
-                              icon={<Users />}
-                              aria-label="Ver Familia"
-                              onClick={() => handleViewFamily(user)}
-                              colorScheme="purple"
-                              isDisabled={loading}
-                              size="sm"
-                            />
-                          </Tooltip>
-                        )}
                         
                         <Tooltip label="Editar usuario">
                           <IconButton
@@ -588,9 +570,21 @@ const UserListPage = () => {
               )}
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" onClick={onViewClose}>
-                Cerrar
-              </Button>
+              <HStack spacing={3}>
+                {/* Botón Ver Familia - solo se muestra si el usuario tiene familia */}
+                {selectedUser && hasFamily(selectedUser) && (
+                  <Button
+                    leftIcon={<Users />}
+                    colorScheme="purple"
+                    onClick={() => handleViewFamily(selectedUser)}
+                  >
+                    Ver Familia ({getFamiliesByDPI[selectedUser.DPI]?.length || 0} miembros)
+                  </Button>
+                )}
+                <Button colorScheme="blue" onClick={onViewClose}>
+                  Cerrar
+                </Button>
+              </HStack>
             </ModalFooter>
           </ModalContent>
         </Modal>
