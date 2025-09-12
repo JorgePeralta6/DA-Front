@@ -37,11 +37,14 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
-  AlertDescription
+  AlertDescription,
+  Image,
+  Flex
 } from "@chakra-ui/react";
 import { EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
 import { useEmployee } from "../../shared/hooks"; // Ajusta la ruta según tu estructura
 import Nav from '../Navbar';
+import toast from "react-hot-toast";
 
 const AdminDashboard = () => {
   const {
@@ -126,8 +129,8 @@ const AdminDashboard = () => {
       return;
     }
 
-    if (passwordData.password.length < 6) {
-      toast.error("La contraseña debe tener al menos 6 caracteres");
+    if (passwordData.password.length < 8) {
+      toast.error("La contraseña debe tener al menos 8 caracteres");
       return;
     }
 
@@ -174,9 +177,6 @@ const AdminDashboard = () => {
             <Heading as="h1" size="xl" color="blue.600" mb={2}>
               Gestión de Empleados
             </Heading>
-            <Text color="gray.600">
-              Administra la información de los empleados del sistema
-            </Text>
           </Box>
 
           {/* Search Bar */}
@@ -466,8 +466,16 @@ const AdminDashboard = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </Container>
-      );
+        <Flex justify="center" align="center">
+          <Image
+            src="https://i.ibb.co/dsY03w5t/escudo-muni-1.png"
+            alt="Logo"
+            boxSize="275px"
+            objectFit="contain"
+            mr={2}
+          />
+        </Flex>
+      </Container>;
     </>
   )
 };

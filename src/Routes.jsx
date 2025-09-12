@@ -6,6 +6,7 @@ const Login = lazy(() => import('./pages/Auth'));
 const Register = lazy(() => import('./components/Register'));
 const UnauthorizedModal = lazy(() => import('./components/UnauthorizedModal'));
 const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
+const DashboardRedirect = lazy(() => import('./components/DashboardRedirect'));
 
 const routes = [
   // Rutas públicas

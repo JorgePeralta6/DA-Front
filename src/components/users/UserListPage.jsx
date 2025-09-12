@@ -43,6 +43,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 import { exportUsersToExcel } from '../../services/api';
 import Nav from '../Navbar';
+import toast from "react-hot-toast";
 
 const UserListPage = () => {
   const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, exportToExcel, loading } = useUser();
@@ -330,7 +331,7 @@ const UserListPage = () => {
             <Box textAlign="center">
               <Text fontSize="lg" color="gray.600" mb={4}>No hay usuarios registrados</Text>
               <Button colorScheme="blue" onClick={openAddModal}>
-                Agregar Primer Usuario
+                Agregar Usuario
               </Button>
             </Box>
           </Center>
