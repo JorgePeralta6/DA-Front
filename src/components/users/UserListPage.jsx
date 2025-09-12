@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Box,
   Button,
@@ -36,9 +36,11 @@ import {
   SimpleGrid,
   useColorModeValue,
   Image,
-  Flex
+  Flex,
+  Badge,
+  Divider
 } from "@chakra-ui/react";
-import { Edit, Eye, Trash, Search, RefreshCcw } from "lucide-react";
+import { Edit, Eye, Trash, Search, RefreshCcw, Users } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useUser } from "../../shared/hooks";
 import { exportUsersToExcel } from '../../services/api';
@@ -49,11 +51,41 @@ const UserListPage = () => {
   const { users, saveUser, updateUser, getUsers, deleteUser, getDPI, exportToExcel, loading } = useUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isViewOpen, onOpen: onViewOpen, onClose: onViewClose } = useDisclosure();
+  const { isOpen: isFamilyOpen, onOpen: onFamilyOpen, onClose: onFamilyClose } = useDisclosure();
 
   const { control, handleSubmit, reset } = useForm();
   const [selectedUser, setSelectedUser] = useState(null);
+  const [familyMembers, setFamilyMembers] = useState([]);
   const [error, setError] = useState(null);
   const [searchText, setSearchText] = useState("");
+
+  // Función para obtener familias (usuarios con el mismo DPI)
+  const getFamiliesByDPI = useMemo(() => {
+    const familiesMap = {};
+    users.forEach(user => {
+      if (user.DPI) {
+        if (!familiesMap[user.DPI]) {
+          familiesMap[user.DPI] = [];
+        }
+        familiesMap[user.DPI].push(user);
+      }
+    });
+    
+    // Solo retornar DPIs que tengan más de un miembro
+    const families = {};
+    Object.keys(familiesMap).forEach(dpi => {
+      if (familiesMap[dpi].length > 1) {
+        families[dpi] = familiesMap[dpi];
+      }
+    });
+    
+    return families;
+  }, [users]);
+
+  // Función para verificar si un usuario tiene familia
+  const hasFamily = (user) => {
+    return getFamiliesByDPI[user.DPI] && getFamiliesByDPI[user.DPI].length > 1;
+  };
 
   // Cargar usuarios cuando el componente se monte
   useEffect(() => {
@@ -78,6 +110,12 @@ const UserListPage = () => {
     await getDPI(searchText.trim());
   };
 
+  // Función para ver familia
+  const handleViewFamily = (user) => {
+    const family = getFamiliesByDPI[user.DPI] || [];
+    setFamilyMembers(family);
+    onFamilyOpen();
+  };
 
   // Función para manejar la creación de un usuario
   const handleAddUser = async (data) => {
@@ -85,9 +123,9 @@ const UserListPage = () => {
       const newUser = await saveUser(data);
       if (newUser) {
         onClose();
-        reset(); // Limpiar formulario
+        reset();
         setSelectedUser(null);
-        await fetchUsersData(); // Recargar la lista
+        await fetchUsersData();
       }
     } catch (error) {
       console.error("Error al agregar usuario:", error);
@@ -116,9 +154,9 @@ const UserListPage = () => {
       const updatedUser = await updateUser(selectedUser.numero, data);
       if (updatedUser) {
         onClose();
-        reset(); // Limpiar formulario
+        reset();
         setSelectedUser(null);
-        await fetchUsersData(); // Recargar la  
+        await fetchUsersData();
       }
     } catch (error) {
       console.error("Error al actualizar usuario:", error);
@@ -134,7 +172,6 @@ const UserListPage = () => {
   // Función para abrir modal de edición
   const openEditModal = (user) => {
     setSelectedUser(user);
-    // Resetear el formulario con los datos del usuario seleccionado
     reset({
       nombreE: user.nombreE || '',
       nombreN: user.nombreN || '',
@@ -152,7 +189,6 @@ const UserListPage = () => {
   // Función para abrir modal de agregar
   const openAddModal = () => {
     setSelectedUser(null);
-    // Resetear el formulario completamente vacío
     reset({
       nombreE: '',
       nombreN: '',
@@ -170,7 +206,7 @@ const UserListPage = () => {
   // Función para cerrar modal y limpiar estado
   const handleCloseModal = () => {
     onClose();
-    reset(); // Limpiar formulario
+    reset();
     setSelectedUser(null);
   };
 
@@ -238,7 +274,7 @@ const UserListPage = () => {
               colorScheme="blue"
               onClick={() => {
                 setSearchText("");
-                fetchUsersData(); // 🔄 Restaurar todos los usuarios
+                fetchUsersData();
               }}
             />
           </HStack>
@@ -249,7 +285,6 @@ const UserListPage = () => {
           <Button onClick={handleExportToExcel} colorScheme="green">
             Exportar a Excel
           </Button>
-
         </HStack>
 
         <TableContainer>
@@ -270,12 +305,21 @@ const UserListPage = () => {
             </Thead>
             <Tbody>
               {users.map((user, index) => {
-                // Crear una key única usando _id o index como fallback
                 const uniqueKey = user._id || `user-${index}`;
+                const userHasFamily = hasFamily(user);
 
                 return (
-                  <Tr key={uniqueKey}>
-                    <Td>{user.numero || index + 1}</Td>
+                  <Tr key={uniqueKey} bg={userHasFamily ? useColorModeValue('blue.50', 'blue.900') : 'transparent'}>
+                    <Td>
+                      <HStack>
+                        <Text>{user.numero || index + 1}</Text>
+                        {userHasFamily && (
+                          <Badge colorScheme="purple" size="sm">
+                            Familia
+                          </Badge>
+                        )}
+                      </HStack>
+                    </Td>
                     <Td>{user.nombreE || 'No especificado'}</Td>
                     <Td>{user.nombreN || 'No especificado'}</Td>
                     <Td>{user.DPI || 'No especificado'}</Td>
@@ -297,6 +341,20 @@ const UserListPage = () => {
                             size="sm"
                           />
                         </Tooltip>
+                        
+                        {userHasFamily && (
+                          <Tooltip label="Ver Familia">
+                            <IconButton
+                              icon={<Users />}
+                              aria-label="Ver Familia"
+                              onClick={() => handleViewFamily(user)}
+                              colorScheme="purple"
+                              isDisabled={loading}
+                              size="sm"
+                            />
+                          </Tooltip>
+                        )}
+                        
                         <Tooltip label="Editar usuario">
                           <IconButton
                             icon={<Edit />}
@@ -336,6 +394,116 @@ const UserListPage = () => {
             </Box>
           </Center>
         )}
+
+        {/* Modal Ver Familia */}
+        <Modal isOpen={isFamilyOpen} onClose={onFamilyClose} size="6xl">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
+              <HStack>
+                <Users />
+                <Text>Información de la Familia</Text>
+                <Badge colorScheme="purple">{familyMembers.length} miembros</Badge>
+              </HStack>
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <VStack spacing={6} align="stretch">
+                {familyMembers.length > 0 && (
+                  <Box border="1px solid" borderColor="gray.200" borderRadius="md" p={4} bg={useColorModeValue('gray.50', 'gray.800')}>
+                    <Text fontWeight="bold" fontSize="lg" mb={2}>Información Común de la Familia</Text>
+                    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
+                      <Box>
+                        <Text fontWeight="semibold" color="blue.600">DPI:</Text>
+                        <Text>{familyMembers[0]?.DPI || 'No especificado'}</Text>
+                      </Box>
+                      <Box>
+                        <Text fontWeight="semibold" color="green.600">Comunidad:</Text>
+                        <Text>{familyMembers[0]?.comunidad || 'No especificado'}</Text>
+                      </Box>
+                      <Box>
+                        <Text fontWeight="semibold" color="orange.600">Dirección:</Text>
+                        <Text>{familyMembers[0]?.direccion || 'No especificado'}</Text>
+                      </Box>
+                    </SimpleGrid>
+                  </Box>
+                )}
+
+                <Divider />
+
+                <Text fontWeight="bold" fontSize="lg">Miembros de la Familia:</Text>
+                
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  {familyMembers.map((member, index) => (
+                    <Box 
+                      key={member._id || index}
+                      border="2px solid"
+                      borderColor={member.genero === 'MASCULINO' ? 'blue.300' : 'pink.300'}
+                      borderRadius="lg"
+                      p={4}
+                      bg={member.genero === 'MASCULINO' 
+                        ? useColorModeValue('blue.50', 'blue.900')
+                        : useColorModeValue('pink.50', 'pink.900')
+                      }
+                    >
+                      <VStack align="stretch" spacing={3}>
+                        <HStack justify="space-between">
+                          <Badge 
+                            colorScheme={member.genero === 'MASCULINO' ? 'blue' : 'pink'}
+                            fontSize="sm"
+                          >
+                            #{member.numero} - {member.genero}
+                          </Badge>
+                        </HStack>
+
+                        <Box>
+                          <Text fontWeight="semibold" color="purple.600">Encargado:</Text>
+                          <Text fontSize="md" fontWeight="medium">{member.nombreE || 'No especificado'}</Text>
+                        </Box>
+
+                        <Box>
+                          <Text fontWeight="semibold" color="teal.600">Niño/a:</Text>
+                          <Text fontSize="md" fontWeight="medium">{member.nombreN || 'No especificado'}</Text>
+                        </Box>
+
+                        <Box>
+                          <Text fontWeight="semibold" color="orange.600">Contacto:</Text>
+                          <Text fontSize="sm">📧 {member.email || 'No especificado'}</Text>
+                          <Text fontSize="sm">📞 {member.telefono || 'No especificado'}</Text>
+                        </Box>
+
+                        {member.notas && (
+                          <Box>
+                            <Text fontWeight="semibold" color="gray.600">Notas:</Text>
+                            <Text fontSize="sm" fontStyle="italic">{member.notas}</Text>
+                          </Box>
+                        )}
+
+                        <Box>
+                          <Text fontWeight="semibold" color="gray.600">Registrado:</Text>
+                          <Text fontSize="sm">
+                            {member.createdAt
+                              ? new Date(member.createdAt).toLocaleDateString('es-ES', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                              })
+                              : 'No hay fecha'}
+                          </Text>
+                        </Box>
+                      </VStack>
+                    </Box>
+                  ))}
+                </SimpleGrid>
+              </VStack>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="purple" onClick={onFamilyClose}>
+                Cerrar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
 
         {/* Modal Ver Usuario */}
         <Modal isOpen={isViewOpen} onClose={onViewClose} size="lg">
@@ -427,7 +595,6 @@ const UserListPage = () => {
           </ModalContent>
         </Modal>
 
-
         {/* Modal Agregar/Editar Usuario */}
         <Modal isOpen={isOpen} onClose={handleCloseModal} size="xl">
           <ModalOverlay />
@@ -466,7 +633,7 @@ const UserListPage = () => {
                     render={({ field }) => (
                       <FormControl>
                         <FormLabel>DPI</FormLabel>
-                        <Input placeholder="DPI (Encargado)" {...field} />
+                        <Input placeholder="DPI (Encargado)" maxLength={13} {...field} />
                       </FormControl>
                     )}
                   />
@@ -510,7 +677,7 @@ const UserListPage = () => {
                     render={({ field }) => (
                       <FormControl>
                         <FormLabel>Teléfono</FormLabel>
-                        <Input placeholder="Teléfono" {...field} />
+                        <Input placeholder="Teléfono (8 dígitos)" maxLength={8} {...field} />
                       </FormControl>
                     )}
                   />
@@ -540,7 +707,7 @@ const UserListPage = () => {
                     defaultValue=""
                     render={({ field }) => (
                       <FormControl>
-                        <FormLabel>Notas</FormLabel>
+                        <FormLabel>Notas (Opcional)</FormLabel>
                         <Input placeholder="Notas" {...field} />
                       </FormControl>
                     )}
@@ -563,6 +730,7 @@ const UserListPage = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+        
         <Flex justify="center" align="center">
           <Image
             src="https://i.ibb.co/dsY03w5t/escudo-muni-1.png"
