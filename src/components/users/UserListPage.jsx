@@ -70,7 +70,7 @@ const UserListPage = () => {
         familiesMap[user.DPI].push(user);
       }
     });
-    
+
     // Solo retornar DPIs que tengan más de un miembro
     const families = {};
     Object.keys(familiesMap).forEach(dpi => {
@@ -78,7 +78,7 @@ const UserListPage = () => {
         families[dpi] = familiesMap[dpi];
       }
     });
-    
+
     return families;
   }, [users]);
 
@@ -307,9 +307,14 @@ const UserListPage = () => {
               {users.map((user, index) => {
                 const uniqueKey = user._id || `user-${index}`;
                 const userHasFamily = hasFamily(user);
+                const auth = JSON.parse(localStorage.getItem("auth"));
+                const userRole = auth?.role;
 
                 return (
-                  <Tr key={uniqueKey} bg={userHasFamily ? useColorModeValue('blue.50', 'blue.900') : 'transparent'}>
+                  <Tr
+                    key={uniqueKey}
+                    bg={userHasFamily ? useColorModeValue('blue.50', 'blue.900') : 'transparent'}
+                  >
                     <Td>
                       <HStack>
                         <Text>{user.numero || index + 1}</Text>
@@ -323,9 +328,9 @@ const UserListPage = () => {
                     <Td>{user.email || 'No especificado'}</Td>
                     <Td>{user.telefono || 'No especificado'}</Td>
                     <Td>{user.genero || 'No especificado'}</Td>
-
                     <Td>
                       <HStack spacing={2}>
+                        {/* Botón de Ver: visible para todos */}
                         <Tooltip label="Ver detalles">
                           <IconButton
                             icon={<Eye />}
@@ -336,27 +341,31 @@ const UserListPage = () => {
                             size="sm"
                           />
                         </Tooltip>
-                        
-                        <Tooltip label="Editar usuario">
-                          <IconButton
-                            icon={<Edit />}
-                            aria-label="Editar"
-                            onClick={() => openEditModal(user)}
-                            colorScheme="yellow"
-                            isDisabled={loading}
-                            size="sm"
-                          />
-                        </Tooltip>
-                        <Tooltip label="Eliminar Usuario">
-                          <IconButton
-                            icon={<Trash />}
-                            aria-label="Eliminar"
-                            onClick={() => handleDeleteUser(user.numero)}
-                            colorScheme="red"
-                            isDisabled={loading}
-                            size="sm"
-                          />
-                        </Tooltip>
+                        {/* Botones solo para el rol ADMIN_ROLE */}
+                        {userRole === "ADMIN_ROLE" && (
+                          <>
+                            <Tooltip label="Editar usuario">
+                              <IconButton
+                                icon={<Edit />}
+                                aria-label="Editar"
+                                onClick={() => openEditModal(user)}
+                                colorScheme="yellow"
+                                isDisabled={loading}
+                                size="sm"
+                              />
+                            </Tooltip>
+                            <Tooltip label="Eliminar Usuario">
+                              <IconButton
+                                icon={<Trash />}
+                                aria-label="Eliminar"
+                                onClick={() => handleDeleteUser(user.numero)}
+                                colorScheme="red"
+                                isDisabled={loading}
+                                size="sm"
+                              />
+                            </Tooltip>
+                          </>
+                        )}
                       </HStack>
                     </Td>
                   </Tr>
@@ -414,23 +423,23 @@ const UserListPage = () => {
                 <Divider />
 
                 <Text fontWeight="bold" fontSize="lg">Miembros de la Familia:</Text>
-                
+
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
                   {familyMembers.map((member, index) => (
-                    <Box 
+                    <Box
                       key={member._id || index}
                       border="2px solid"
                       borderColor={member.genero === 'MASCULINO' ? 'blue.300' : 'pink.300'}
                       borderRadius="lg"
                       p={4}
-                      bg={member.genero === 'MASCULINO' 
+                      bg={member.genero === 'MASCULINO'
                         ? useColorModeValue('blue.50', 'blue.900')
                         : useColorModeValue('pink.50', 'pink.900')
                       }
                     >
                       <VStack align="stretch" spacing={3}>
                         <HStack justify="space-between">
-                          <Badge 
+                          <Badge
                             colorScheme={member.genero === 'MASCULINO' ? 'blue' : 'pink'}
                             fontSize="sm"
                           >
@@ -724,7 +733,7 @@ const UserListPage = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
-        
+
         <Flex justify="center" align="center">
           <Image
             src="https://i.ibb.co/dsY03w5t/escudo-muni-1.png"
