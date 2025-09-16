@@ -1,40 +1,38 @@
-import { Navigate, Outlet } from "react-router-dom";
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import UnauthorizedModal from './UnauthorizedModal';
 
-const PrivateRoute = ({ allowedRoles }) => {
-  const authData = JSON.parse(localStorage.getItem("auth"));
+const PrivateRoute = ({ allowedRoles = [] }) => {
+  let authData;
+  try {
+    authData = JSON.parse(localStorage.getItem('auth'));
+  } catch (error) {
+    console.log("🚫 Error parseando datos de autenticación");
+    return <UnauthorizedModal />;
+  }
 
-  // 🔹 Si no hay datos de autenticación → login
+  // 🚫 Si no hay datos de autenticación
   if (!authData) {
-    console.log("❌ No hay datos de autenticación");
-    return <Navigate to="/" replace />;
+    console.log("🚫 No hay datos de autenticación");
+    return <UnauthorizedModal />;
   }
 
-  // 🔹 Extraer el rol correctamente desde authDetails
-  // Tu API guarda: { authDetails: { role: "ADMIN_ROLE", username, token, etc } }
-  const userRole = authData.authDetails?.role || authData.role;
+  const { role, token } = authData;
 
-  console.log("🔍 Datos de auth completos:", authData);
-  console.log("🔍 Rol del usuario:", userRole);
-  console.log("🔍 Roles permitidos:", allowedRoles);
-
-  // 🔹 Validar que existe el rol
-  if (!userRole) {
-    console.warn("⚠️ No se encontró rol en los datos de usuario:", authData);
-    return <Navigate to="/unauthorized" replace />;
+  // 🚫 Verificaciones básicas (token o rol faltantes)
+  if (!token || !role) {
+    console.log("🚫 Datos de autenticación incompletos");
+    localStorage.removeItem('auth');
+    return <UnauthorizedModal />;
   }
 
-  // 🔹 Validar si el rol del usuario está en los roles permitidos
-  const hasAccess = allowedRoles.includes(userRole);
-
-  console.log("✅ ¿Tiene acceso?", hasAccess);
-
-  if (!hasAccess) {
-    console.log(`❌ Acceso denegado. Usuario con rol '${userRole}' intentó acceder a ruta que requiere: [${allowedRoles.join(', ')}]`);
-    return <Navigate to="/unauthorized" replace />;
+  // 🚫 Usuario autenticado pero rol no permitido
+  if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
+    console.log(`🚫 Usuario autenticado pero rol ${role} no autorizado. Roles permitidos:`, allowedRoles);
+    return <UnauthorizedModal />;
   }
 
-  // 🔹 Si pasa todas las validaciones, renderiza el componente hijo
-  console.log("✅ Acceso autorizado");
+  console.log(`✅ Acceso autorizado para rol: ${role}`);
   return <Outlet />;
 };
 

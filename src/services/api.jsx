@@ -1,33 +1,53 @@
+// Actualización de tu interceptor existente
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const apiClient = axios.create({
     baseURL: 'http://localhost:3000/dmmsystem/v1',
     timeout: 5000
-})
-
+});
 
 apiClient.interceptors.request.use(
-
     (config) => {
         const useUserDetails = localStorage.getItem('auth');
-
         if (useUserDetails) {
-            const token = JSON.parse(useUserDetails).token
-            config.headers['x-token'] = token;
+            const token = JSON.parse(useUserDetails).token;
             config.headers['x-token'] = token;
         }
-
         return config;
     },
-    response => response,
-    error => {
-        if (error.response?.status === 401) {
-            window.dispatchEvent(new Event('token-expired'));
-        }
+    (error) => {
         return Promise.reject(error);
     }
-)
+);
 
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.log('❌ Error en petición:', error.response?.status);
+        
+        // Si el error es 401 (token expirado/inválido), limpiar sesión
+        if (error.response?.status === 401) {
+            console.log('🚫 Token expirado, limpiando sesión...');
+            localStorage.removeItem('auth');
+            
+            // Mostrar mensaje al usuario (opcional)
+            toast.error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', {
+                style: {
+                    background: 'red',
+                    color: 'white'
+                }
+            });
+            
+            // Redirigir al login
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        }
+        
+        return Promise.reject(error);
+    }
+);
 
 export const getUsers = async () => {
     try {

@@ -1,5 +1,5 @@
 export const logout = () => {
-    localStorage.removeItem('user')
+    localStorage.removeItem('auth')
 
     window.location.href = '/'
 

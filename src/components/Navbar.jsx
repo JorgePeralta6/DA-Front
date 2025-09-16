@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react'
 import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { logout } from '../shared/hooks/index'; // 🔥 Importa tu hook
 
 const NavLink = ({ children }) => (
     <Box
@@ -37,15 +38,16 @@ const NavLink = ({ children }) => (
 
 export default function Nav({ onCourseSelect }) {
     const { colorMode, toggleColorMode } = useColorMode();
-    const navigate = useNavigate(); // <--- necesario para redirigir
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handleCourseSelect = (course) => {
         onCourseSelect(course);
     };
 
+    // ✅ Ahora usa tu hook que SÍ limpia el localStorage
     const handleLogout = () => {
-        navigate('/');
+        logout(); // Esto ejecuta localStorage.removeItem('auth') y window.location.href = '/'
     };
 
     return (
