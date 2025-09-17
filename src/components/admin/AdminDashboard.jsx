@@ -42,9 +42,10 @@ import {
   Flex
 } from "@chakra-ui/react";
 import { EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
-import { useEmployee } from "../../shared/hooks"; // Ajusta la ruta según tu estructura
+import { useEmployee } from "../../shared/hooks";
 import Nav from '../Navbar';
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AdminDashboard = () => {
   const {
@@ -59,6 +60,7 @@ const AdminDashboard = () => {
   const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const navigate = useNavigate();
 
   const {
     isOpen: isEditOpen,
@@ -72,15 +74,18 @@ const AdminDashboard = () => {
     onClose: onPasswordClose
   } = useDisclosure();
 
-  // Colores para el modo claro/oscuro
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.600");
+
+    const handleViewUserPage = () => {
+    navigate("/userListPage");
+  };
+
 
   useEffect(() => {
     getEmployees();
   }, []);
 
-  // Filtrar empleados por búsqueda
   useEffect(() => {
     if (!searchTerm) {
       setFilteredEmployees(employees);
@@ -177,6 +182,9 @@ const AdminDashboard = () => {
             <Heading as="h1" size="xl" color="blue.600" mb={2}>
               Gestión de Empleados
             </Heading>
+            <Button colorScheme="blue" onClick={handleViewUserPage}>
+              Ver todos los registros
+            </Button>
           </Box>
 
           {/* Search Bar */}

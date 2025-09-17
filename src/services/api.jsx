@@ -24,14 +24,12 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.log('❌ Error en petición:', error.response?.status);
+        console.log(' Error en petición:', error.response?.status);
         
-        // Si el error es 401 (token expirado/inválido), limpiar sesión
         if (error.response?.status === 401) {
-            console.log('🚫 Token expirado, limpiando sesión...');
+            console.log('Token expirado, limpiando sesión...');
             localStorage.removeItem('auth');
             
-            // Mostrar mensaje al usuario (opcional)
             toast.error('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.', {
                 style: {
                     background: 'red',
@@ -39,7 +37,6 @@ apiClient.interceptors.response.use(
                 }
             });
             
-            // Redirigir al login
             setTimeout(() => {
                 window.location.href = '/';
             }, 1500);
@@ -194,7 +191,6 @@ export const updateEmployee = async (id, updatedData) => {
     }
 };
 
-// Actualizar contraseña de empleado
 export const updateEmployeePassword = async (id, passwordData) => {
     try {
         const response = await apiClient.put(`/auth/employees/${id}/password`, passwordData);
