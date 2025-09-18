@@ -1,9 +1,8 @@
-// Actualización de tu interceptor existente
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:3000/dmmsystem/v1',
+    baseURL: 'https://da-q8nd.onrender.com/dmmsystem/v1',
     timeout: 5000
 });
 
