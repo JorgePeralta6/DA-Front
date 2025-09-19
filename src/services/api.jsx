@@ -144,11 +144,24 @@ export const register = async (data) => {
 export const exportUsersToExcel = async () => {
     try {
         const response = await apiClient.get('/users/excel', {
-            responseType: 'blob', // Esto asegura que recibimos un archivo
+            responseType: 'blob',
         });
 
-        // Crear un enlace temporal para descargar el archivo
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        // Crear un Blob y un enlace temporal para descargar el archivo
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+
+        // Nombre de archivo sugerido (puedes extraerlo del header si el backend lo envía con `Content-Disposition`)
+        link.setAttribute('download', 'usuarios.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        // Liberar el URL temporal
+        window.URL.revokeObjectURL(url);
 
         return { success: true };
     } catch (e) {
@@ -161,6 +174,7 @@ export const exportUsersToExcel = async () => {
         };
     }
 };
+
 
 export const getEmployees = async () => {
     try {
