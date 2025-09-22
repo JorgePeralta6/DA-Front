@@ -341,8 +341,6 @@ const UserListPage = () => {
                             size="sm"
                           />
                         </Tooltip>
-                        {/* Botones solo para el rol ADMIN_ROLE */}
-                        {userRole === "ADMIN_ROLE" && (
                           <>
                             <Tooltip label="Editar usuario">
                               <IconButton
@@ -365,7 +363,6 @@ const UserListPage = () => {
                               />
                             </Tooltip>
                           </>
-                        )}
                       </HStack>
                     </Td>
                   </Tr>
