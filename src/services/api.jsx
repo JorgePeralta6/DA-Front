@@ -220,7 +220,7 @@ export const updateEmployeePassword = async (id, passwordData) => {
 
 export const deleteEmployee = async (id) => {
     try {
-        const response = await apiClient.delete(`/auth/employees/${id}`);
+        const response = await apiClient.delete(`/auth/${id}`);
         return response.data;
     } catch (e) {
         console.error('Error en deleteEmployee:', e);
