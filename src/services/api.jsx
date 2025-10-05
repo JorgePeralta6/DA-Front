@@ -217,3 +217,17 @@ export const updateEmployeePassword = async (id, passwordData) => {
         };
     }
 };
+
+export const deleteEmployee = async (id) => {
+    try {
+        const response = await apiClient.delete(`/auth/employees/${id}`);
+        return response.data;
+    } catch (e) {
+        console.error('Error en deleteEmployee:', e);
+        return { 
+            error: true, 
+            msg: e.response?.data?.msg || 'Error al eliminar empleado',
+            e 
+        };
+    }
+};

@@ -39,13 +39,20 @@ import {
   AlertTitle,
   AlertDescription,
   Image,
-  Flex
+  Flex,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay
 } from "@chakra-ui/react";
-import { EditIcon, LockIcon, SearchIcon } from "@chakra-ui/icons";
+import { EditIcon, LockIcon, SearchIcon, AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useEmployee } from "../../shared/hooks";
 import Nav from '../Navbar';
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import AddUserModal from "./AddUserModal";
 
 const AdminDashboard = () => {
   const {
@@ -53,14 +60,18 @@ const AdminDashboard = () => {
     loading,
     getEmployees,
     updateEmployee,
-    updateEmployeePassword
+    updateEmployeePassword,
+    deleteEmployee,
+    addEmployee
   } = useEmployee();
 
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [passwordData, setPasswordData] = useState({ password: "", confirmPassword: "" });
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState([]);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const navigate = useNavigate();
+  const cancelRef = React.useRef();
 
   const {
     isOpen: isEditOpen,
@@ -74,13 +85,24 @@ const AdminDashboard = () => {
     onClose: onPasswordClose
   } = useDisclosure();
 
+  const {
+    isOpen: isAddOpen,
+    onOpen: onAddOpen,
+    onClose: onAddClose
+  } = useDisclosure();
+
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose
+  } = useDisclosure();
+
   const bgColor = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
-    const handleViewUserPage = () => {
+  const handleViewUserPage = () => {
     navigate("/userListPage");
   };
-
 
   useEffect(() => {
     getEmployees();
@@ -109,6 +131,11 @@ const AdminDashboard = () => {
     setSelectedEmployee(employee);
     setPasswordData({ password: "", confirmPassword: "" });
     onPasswordOpen();
+  };
+
+  const openDeleteModal = (employee) => {
+    setEmployeeToDelete(employee);
+    onDeleteOpen();
   };
 
   const handleSaveEmployee = async () => {
@@ -150,6 +177,28 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteEmployee = async () => {
+    if (!employeeToDelete) return;
+
+    const success = await deleteEmployee(employeeToDelete._id);
+
+    if (success) {
+      onDeleteClose();
+      setEmployeeToDelete(null);
+    }
+  };
+
+  const handleAddEmployee = async (employeeData) => {
+    const success = await addEmployee(employeeData);
+
+    if (success) {
+      toast.success("Empleado agregado exitosamente");
+      await getEmployees();
+      return true;
+    }
+    return false;
+  };
+
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case "ADMIN_ROLE":
@@ -179,12 +228,17 @@ const AdminDashboard = () => {
         <VStack spacing={6} align="stretch">
           {/* Header */}
           <Box>
-            <Heading as="h1" size="xl" color="blue.600" mb={2}>
+            <Heading as="h1" size="xl" color="blue.600" mb={4}>
               Gestión de Empleados
             </Heading>
-            <Button colorScheme="blue" onClick={handleViewUserPage}>
-              Ver todos los registros
-            </Button>
+            <HStack spacing={3}>
+              <Button colorScheme="green" leftIcon={<AddIcon />} onClick={onAddOpen}>
+                Agregar Usuario
+              </Button>
+              <Button colorScheme="blue" onClick={handleViewUserPage}>
+                Ver todos los registros
+              </Button>
+            </HStack>
           </Box>
 
           {/* Search Bar */}
@@ -312,6 +366,15 @@ const AdminDashboard = () => {
                                   onClick={() => openPasswordModal(emp)}
                                 />
                               </Tooltip>
+                              <Tooltip label="Eliminar empleado">
+                                <IconButton
+                                  icon={<DeleteIcon />}
+                                  colorScheme="red"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openDeleteModal(emp)}
+                                />
+                              </Tooltip>
                             </HStack>
                           </Td>
                         </Tr>
@@ -323,6 +386,14 @@ const AdminDashboard = () => {
             </CardBody>
           </Card>
         </VStack>
+
+        {/* Modal Agregar Empleado */}
+        <AddUserModal
+          isOpen={isAddOpen}
+          onClose={onAddClose}
+          onAddEmployee={handleAddEmployee}
+          loading={loading}
+        />
 
         {/* Modal Editar Empleado */}
         <Modal isOpen={isEditOpen} onClose={onEditClose} size="lg">
@@ -474,6 +545,64 @@ const AdminDashboard = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+
+        {/* AlertDialog para Eliminar */}
+        <AlertDialog
+          isOpen={isDeleteOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onDeleteClose}
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                <HStack>
+                  <DeleteIcon color="red.500" />
+                  <Text>Eliminar Empleado</Text>
+                </HStack>
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                <VStack align="start" spacing={3}>
+                  <Alert status="error" borderRadius="md">
+                    <AlertIcon />
+                    <Box>
+                      <AlertTitle>¡Advertencia!</AlertTitle>
+                      <AlertDescription>
+                        Esta acción no se puede deshacer.
+                      </AlertDescription>
+                    </Box>
+                  </Alert>
+                  <Text>
+                    ¿Estás seguro que deseas eliminar a{" "}
+                    <Text as="span" fontWeight="bold">
+                      {employeeToDelete?.nombre} {employeeToDelete?.apellido}
+                    </Text>
+                    ?
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Email: {employeeToDelete?.email}
+                  </Text>
+                </VStack>
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <HStack spacing={3}>
+                  <Button ref={cancelRef} onClick={onDeleteClose}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={handleDeleteEmployee}
+                    isLoading={loading}
+                  >
+                    Eliminar
+                  </Button>
+                </HStack>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
+
         <Flex justify="center" align="center">
           <Image
             src="https://i.ibb.co/dsY03w5t/escudo-muni-1.png"
@@ -483,9 +612,9 @@ const AdminDashboard = () => {
             mr={2}
           />
         </Flex>
-      </Container>;
+      </Container>
     </>
-  )
+  );
 };
 
 export default AdminDashboard;

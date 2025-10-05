@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import {
     getEmployees as getEmployeesRequest,
     updateEmployee as updateEmployeeRequest,
-    updateEmployeePassword as updateEmployeePasswordRequest
+    updateEmployeePassword as updateEmployeePasswordRequest,
+    deleteEmployee as deleteEmployeeRequest
 } from "../../services";
 
 export const useEmployee = () => {
@@ -85,6 +86,32 @@ export const useEmployee = () => {
         }
     };
 
+    // Eliminar empleado
+    const deleteEmployee = async (id) => {
+        setLoading(true);
+        try {
+            const result = await deleteEmployeeRequest(id);
+
+            if (result?.error) {
+                setLoading(false);
+                toast.error(result.msg || "No se pudo eliminar el empleado");
+                return false;
+            }
+
+            toast.success("Empleado eliminado correctamente");
+
+            // Eliminar el empleado del estado local
+            setEmployees((prev) => prev.filter((emp) => emp._id !== id));
+
+            setLoading(false);
+            return true;
+        } catch (error) {
+            setLoading(false);
+            toast.error("Error al eliminar empleado");
+            return false;
+        }
+    };
+
     // Seleccionar empleado específico
     const selectEmployee = (employeeData) => {
         setEmployee(employeeData);
@@ -102,6 +129,7 @@ export const useEmployee = () => {
         getEmployees,
         updateEmployee,
         updateEmployeePassword,
+        deleteEmployee,
         selectEmployee,
         clearEmployee
     };

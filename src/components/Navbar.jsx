@@ -45,9 +45,8 @@ export default function Nav({ onCourseSelect }) {
         onCourseSelect(course);
     };
 
-    // ✅ Ahora usa tu hook que SÍ limpia el localStorage
     const handleLogout = () => {
-        logout(); // Esto ejecuta localStorage.removeItem('auth') y window.location.href = '/'
+        logout();
     };
 
     return (
